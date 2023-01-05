@@ -26,3 +26,4 @@ def embed(texts):
         embeddings.append(outputs[1][0])
 
     return np.array(embeddings)
+

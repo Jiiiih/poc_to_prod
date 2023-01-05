@@ -2,10 +2,8 @@ import unittest
 from unittest.mock import MagicMock
 import tempfile
 import pandas as pd
-from train.train import run
+from predict.predict.run import TextPredictionModel
 from preprocessing.preprocessing import utils
-
-
 
 
 def load_dataset_mock():
@@ -30,28 +28,21 @@ def load_dataset_mock():
     })
 
 
+
 class TestTrain(unittest.TestCase):
     # use the function defined above as a mock for utils.LocalTextCategorizationDataset.load_dataset
     utils.LocalTextCategorizationDataset.load_dataset = MagicMock(return_value=load_dataset_mock())
 
-    def test_train(self):
-        # create a dictionary params for train conf
-        params = {
-            'batch_size': 2,
-            'epochs': 1,
-            'dense_dim': 64,
-            'min_samples_per_label': 10,
-            'verbose': 1
-        }
+    def test_predict(self):
+        
+        base = TextPredictionModel.from_artefacts("train/data/artefacts/test/2023-01-05-11-59-17")
+        predictions = TextPredictionModel(base.model, base.params, base.labels_to_index).predict(["Is it possible to execute the procedure of a function in the scope of the caller?",
+                                        "ruby on rails: how to change BG color of options in select list, ruby-on-rails"],
+                                        top_k=1)
+                                
+        # assert predicted labels
+        self.assertEqual(predictions, ["php","ruby-on-rails"])
 
+#"train/data/artefacts/test/2023-01-05-11-59-17/train_output.json"
 
-        # we create a temporary file to store artefacts
-        with tempfile.TemporaryDirectory() as model_dir:
-            accuracy, _ = run.train(dataset_path = "fake_path",
-                                     train_conf = params, 
-                                     model_path ="test", 
-                                     add_timestamp = True)
-
-        # assert that accuracy is equal to 1.0
-        self.assertEqual(accuracy, 1.0)
 
