@@ -27,7 +27,7 @@ class TextPredictionModel:
             from training artefacts, returns a TextPredictionModel object
             :param artefacts_path: path to training artefacts
         """
-        # TODO: CODE HERE
+       
         # load model
         model = load_model(artefacts_path+"/model.h5")
 
@@ -41,7 +41,7 @@ class TextPredictionModel:
 
         return cls(model, params, labels_to_index)
 
-    def predict(self, text_list, top_k=1):
+    def predict(self, text_list, top_k=3):
         """
             predict top_k tags for a list of texts
             :param text_list: list of text (questions from stackoverflow)
@@ -53,45 +53,33 @@ class TextPredictionModel:
 
         # embed text_list
         embeddings = embed(text_list)
-
-        # debug
         print("embeddings",embeddings)
 
         # predict tags indexes from embeddings
-        tags_indexes = self.model.predict(embeddings)
-
-        # debug
-        print("tags_indexes",tags_indexes)
+        tag_pred = self.model.predict(embeddings)
+        print("tag_pred",tag_pred)
 
 
-        # from tags indexes compute top_k tags for each text
-        top_k_tags_index = []
-        for tags_index in tags_indexes:
-            indexation = argsort(tags_index[0])[-top_k:]
-            top_k_tags_index.append(indexation)
+        print(self.labels_to_index)
+
+        # get predictions
+        indices = argsort(tag_pred)[-top_k:]
+        list_indices = [index.argmax() for index in indices]
+
+        # create a dic with the labels
+        dic = self.labels_to_index
+        predictions = []
+        for i in list_indices:
+            # give values to predictions with labels 
+            print("i",i)
+            pred = dic[str(i)]
+            print("pred",pred)
+            predictions.append(pred)
 
         logger.info("Prediction done in {:2f}s".format(time.time() - tic))
 
-        print("top_k_tags_index",top_k_tags_index)
-        
-
-        # debug 
-        print("self.labels_index_inv",self.labels_index_inv)
-    
-        # print type of self.labels_index_inv
-        print(type(self.labels_index_inv))
-        
- 
-        
-        print("top_k_tags_index",top_k_tags_index)
-        
-
-        # get predictions
-        predictions = []
-        for top_tag in top_tags:
-            predictions.append(self.labels_index_inv[top_tag])
-
         return predictions
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

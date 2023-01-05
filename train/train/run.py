@@ -76,28 +76,27 @@ def train(dataset_path, train_conf, model_path, add_timestamp):
 
     # TODO: CODE HERE
     # create folder artefacts_path
-    os.makedirs('train/data/artefacts/'+artefacts_path)
+    os.makedirs(artefacts_path)
     
 
 
     # TODO: CODE HERE
     # save model in artefacts folder, name model.h5
-    model.save(f"train/data/artefacts/{artefacts_path}/model.h5")
+    model.save(f"{artefacts_path}/model.h5")
 
     # TODO: CODE HERE
     # save train_conf used in artefacts_path/params.json
-    with open(f'train/data/artefacts/{artefacts_path}/params.json', 'w') as f:
+    with open(f'{artefacts_path}/params.json', 'w') as f:
         json.dump(train_conf, f)
 
     # TODO: CODE HERE
     # save labels index in artefacts_path/labels_index.json
-    with open(f'train/data/artefacts/{artefacts_path}/labels_index.json', "w") as f:
+    with open(f'{artefacts_path}/labels_index.json', "w") as f:
         json.dump(dataset.get_index_to_label_map(), f)
     
-    print(f'train/data/artefacts/{artefacts_path}/labels_index.json')
     # train_history.history is not JSON-serializable because it contains numpy arrays
     serializable_hist = {k: [float(e) for e in v] for k, v in train_history.history.items()}
-    with open(os.path.join(f"train/data/artefacts/"+artefacts_path, "train_output.json"), "w") as f:
+    with open(os.path.join(artefacts_path, "train_output.json"), "w") as f:
         json.dump(serializable_hist, f)
 
     return scores[1], artefacts_path

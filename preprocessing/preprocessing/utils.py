@@ -118,15 +118,14 @@ class BaseTextCategorizationDataset:
         from label list, returns a map index -> label
         (dictionary index: label)
         """
-        return {i: self._get_label_list()[i] for i in range(len(self._get_label_list()))}
+        return {index: label for index, label in enumerate(self._get_label_list())}
 
     def get_label_to_index_map(self):
         """
         from index -> label map, returns label -> index map
         (reverse the previous dictionary)
         """
-        labeled_dic = {self._get_label_list()[i]: i for i in range(len(self._get_label_list()))}
-        return labeled_dic
+        return {label: index for index, label in enumerate(self._get_label_list())}
 
     def to_indexes(self, labels):
         """

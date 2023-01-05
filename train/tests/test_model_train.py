@@ -44,12 +44,11 @@ class TestTrain(unittest.TestCase):
             'verbose': 1
         }
 
-
         # we create a temporary file to store artefacts
         with tempfile.TemporaryDirectory() as model_dir:
             accuracy, _ = run.train(dataset_path = "fake_path",
                                      train_conf = params, 
-                                     model_path ="test", 
+                                     model_path = model_dir, 
                                      add_timestamp = True)
 
         # assert that accuracy is equal to 1.0
