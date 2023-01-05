@@ -41,7 +41,7 @@ class TextPredictionModel:
 
         return cls(model, params, labels_to_index)
 
-    def predict(self, text_list, top_k=5):
+    def predict(self, text_list, top_k=1):
         """
             predict top_k tags for a list of texts
             :param text_list: list of text (questions from stackoverflow)
@@ -51,24 +51,47 @@ class TextPredictionModel:
 
         logger.info(f"Predicting text_list=`{text_list}`")
 
-        # TODO: CODE HERE
         # embed text_list
         embeddings = embed(text_list)
 
-        # TODO: CODE HERE
+        # debug
+        print("embeddings",embeddings)
+
         # predict tags indexes from embeddings
-        tags_pred = self.model.predict(embeddings)
+        tags_indexes = self.model.predict(embeddings)
 
-        # TODO: CODE HERE
+        # debug
+        print("tags_indexes",tags_indexes)
+
+
         # from tags indexes compute top_k tags for each text
-        tags_index = argsort(tags_pred, axis=1)[:, -top_k:]
-
-        predictions = [self.labels_index_inv[index] for index in tags_index]
+        top_k_tags_index = []
+        for tags_index in tags_indexes:
+            indexation = argsort(tags_index[0])[-top_k:]
+            top_k_tags_index.append(indexation)
 
         logger.info("Prediction done in {:2f}s".format(time.time() - tic))
 
-        return predictions
+        print("top_k_tags_index",top_k_tags_index)
+        
 
+        # debug 
+        print("self.labels_index_inv",self.labels_index_inv)
+    
+        # print type of self.labels_index_inv
+        print(type(self.labels_index_inv))
+        
+ 
+        
+        print("top_k_tags_index",top_k_tags_index)
+        
+
+        # get predictions
+        predictions = []
+        for top_tag in top_tags:
+            predictions.append(self.labels_index_inv[top_tag])
+
+        return predictions
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

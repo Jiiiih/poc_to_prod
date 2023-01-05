@@ -37,7 +37,8 @@ class TestTrain(unittest.TestCase):
         
         base = TextPredictionModel.from_artefacts("train/data/artefacts/test/2023-01-05-11-59-17")
         predictions = TextPredictionModel(base.model, base.params, base.labels_to_index).predict(["Is it possible to execute the procedure of a function in the scope of the caller?",
-                                        "ruby on rails: how to change BG color of options in select list, ruby-on-rails"],
+                                        "ruby on rails: how to change BG color of options in select list, ruby-on-rails",
+                                        "Is it possible to execute the procedure of a function in the scope of the caller?"],
                                         top_k=1)
                                 
         # assert predicted labels
