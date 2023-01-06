@@ -11,8 +11,7 @@ def home():
 @app.route('/predict', methods=['GET','POST'])
 def predict():
     user_input = request.form['text_input']
-    modell = TextPredictionModel.from_artefacts('train/data/artefacts/test/2023-01-05-17-54-07')
-    # Use your prediction function to predict the label of the text
+    model = TextPredictionModel.from_artefacts('train/data/artefacts/test/2023-01-05-17-54-07')
     label = model.predict(user_input, top_k=1)
     return render_template('result.html', label=label)
 
